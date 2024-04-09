@@ -50,6 +50,8 @@ pub fn expand_from_filepath(parent_path: &str, benchmark: &mut Benchmark, access
       multi_csv_request::expand(parent_path, item, benchmark);
     } else if multi_file_request::is_that_you(item) {
       multi_file_request::expand(parent_path, item, benchmark);
+    } else if actions::Debug::is_that_you(item) {
+      benchmark.push(Box::new(actions::Debug::new(item, None)));
     } else if actions::Delay::is_that_you(item) {
       benchmark.push(Box::new(actions::Delay::new(item, None)));
     } else if actions::Exec::is_that_you(item) {
