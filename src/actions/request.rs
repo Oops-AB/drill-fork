@@ -5,7 +5,7 @@ use async_trait::async_trait;
 use colored::Colorize;
 use reqwest::{
   header::{self, HeaderMap, HeaderName, HeaderValue},
-  ClientBuilder, Method, Response,
+  ClientBuilder, Method, Response, redirect::Policy
 };
 use std::fmt::Write;
 use url::Url;
@@ -154,7 +154,7 @@ impl Request {
     // Resolve the body
     let (client, request) = {
       let mut pool2 = pool.lock().unwrap();
-      let client = pool2.entry(domain).or_insert_with(|| ClientBuilder::default().danger_accept_invalid_certs(config.no_check_certificate).build().unwrap());
+      let client = pool2.entry(domain).or_insert_with(|| ClientBuilder::default().danger_accept_invalid_certs(config.no_check_certificate).redirect(Policy::none()).build().unwrap());
 
       let request = if let Some(body) = self.body.as_ref() {
         interpolated_body = uninterpolator.get_or_insert(interpolator::Interpolator::new(context)).resolve(body, !config.relaxed_interpolations);
