@@ -5,7 +5,8 @@ use async_trait::async_trait;
 use colored::Colorize;
 use reqwest::{
   header::{self, HeaderMap, HeaderName, HeaderValue},
-  ClientBuilder, Method, Response, redirect::Policy
+  redirect::Policy,
+  ClientBuilder, Method, Response,
 };
 use std::fmt::Write;
 use url::Url;
@@ -173,11 +174,15 @@ impl Request {
 
     if let Some(cookies) = context.get("cookies") {
       let cookies: Map<String, Value> = serde_json::from_value(cookies.clone()).unwrap();
-      let cookie = cookies.iter().map(|(key, value)| {
-        let v = value.to_string();
-        let trimmedval = v.trim_matches('"');
-        format!("{key}={trimmedval}")
-      }).collect::<Vec<_>>().join(";");
+      let cookie = cookies
+        .iter()
+        .map(|(key, value)| {
+          let v = value.to_string();
+          let trimmedval = v.trim_matches('"');
+          format!("{key}={trimmedval}")
+        })
+        .collect::<Vec<_>>()
+        .join(";");
 
       headers.insert(header::COOKIE, HeaderValue::from_str(&cookie).unwrap());
     }
